@@ -4,7 +4,7 @@ import { z } from 'zod'
 // zod is a TypeScript-first schema declaration and validation library
 // The schema ensures that the data conforms to the expected structure and types
 
-const createPaymentLinkSchema = z.object({
+const CreatePaymentLinkInputSchema = z.object({
   amount: z.number().positive(),
   currency: z.enum(['USD', 'MXN', 'COP']).default('MXN'),
   description: z.string().max(140).optional(),
@@ -13,4 +13,4 @@ const createPaymentLinkSchema = z.object({
   }),
 })
  
-export type CreatePaymentLinkInput = z.infer<typeof createPaymentLinkSchema>
+export const createPaymentLinkSchema = CreatePaymentLinkInputSchema
