@@ -1,6 +1,9 @@
 import { expect, test } from 'vitest'
 
-import { app } from '../src/app.js'
+import { createApp } from '../src/app.js'
+import { InMemoryPaymentLinkRepository } from '../src/repositories/payment-link-repository.js'
+
+const app = createApp(new InMemoryPaymentLinkRepository())
 
 test('GET /health', async () => {
   const request = new Request('http://localhost/health')

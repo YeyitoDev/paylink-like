@@ -35,29 +35,19 @@ const validationHook = (result: ValidationResult, c: Context) => {
 export function createPaymentLinkRoutes(repository: PaymentLinkRepository) {
   const routes = new Hono()
 
-
-
-    routes.post('/', zValidator('json', 
-        createPaymentLinkSchema, 
-        validationHook), async (c) => {
-            const input = c.req.valid('json')
-            // TODO 1: guarda el link con repository.create(...)   (es async)
-            const link = await repository.create(input)
-            // TODO 2: header Location → c.header('Location', `/payment-links/${...}`)
-            c.header('Location', `/payment-links/${link.id}`)
-            // TODO 3: responde el link con status 201 → c.json(..., 201)
-            return c.json(link, 201)
+  routes.post('/', zValidator('json', createPaymentLinkSchema, validationHook), async (c) => {
+    const input = c.req.valid('json')
+    const link = await repository.create(input)
+    c.header('Location', `/payment-links/${link.id}`)
+    return c.json(link, 201)
   })
 
   routes.get('/:id', zValidator('param', idParamSchema, validationHook), async (c) => {
     const { id } = c.req.valid('param')
-    // TODO 1: busca con repository.findById(id)
     const link = await repository.findById(id)
-    // TODO 2: si es null → c.json({ error: { code: 'NOT_FOUND', message: ... } }, 404)
     if (!link) {
       return c.json({ error: { code: 'NOT_FOUND', message: 'Payment link not found' } }, 404)
     }
-    // TODO 3: si existe → c.json(link)   (200 es el default)
     return c.json(link)
   })
 

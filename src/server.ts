@@ -1,6 +1,8 @@
 import { serve } from '@hono/node-server'
-import { app } from './app.js'
+import { createApp } from './app.js'
+import { InMemoryPaymentLinkRepository } from './repositories/payment-link-repository.js'
 
+const app = createApp(new InMemoryPaymentLinkRepository())
 
 serve({
   fetch: app.fetch,

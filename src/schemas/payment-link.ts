@@ -4,13 +4,16 @@ import { z } from 'zod'
 // zod is a TypeScript-first schema declaration and validation library
 // The schema ensures that the data conforms to the expected structure and types
 
-const CreatePaymentLinkInputSchema = z.object({
-  amount: z.number().positive(),
-  currency: z.enum(['USD', 'MXN', 'COP']).default('MXN'),
-  description: z.string().max(140).optional(),
-  expiresAt: z.date().refine((date) => date > new Date(), {
-    message: 'Expiration date must be in the future',
-  }),
+export const createPaymentLinkSchema = z.object({
+  amount: z.int().positive().max(1000000), // amount must be a positive integer
+  currency: z.enum(['USD', 'MXN', 'COP','PEN','EUR','GBP']), // currency must be one of the specified values
+  description: z.string().trim().min(1).max(140).optional(), // description is optional and must be a string with a max length of 140
+  expiresAt: z.iso
+  .datetime()
+  .refine((value) => Date.parse(value) > Date.now(), {
+    error: 'Expiration date must be in the future',
+  })
+  .optional(),
 })
- 
-export const createPaymentLinkSchema = CreatePaymentLinkInputSchema
+
+export type CreatePaymentLinkInput = z.infer<typeof createPaymentLinkSchema>
